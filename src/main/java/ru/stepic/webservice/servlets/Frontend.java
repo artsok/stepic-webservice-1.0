@@ -16,6 +16,7 @@ import ru.stepic.webservice.templater.PageGenerator;
  * @author Artem Sokovets (relix@mail.ru)
  * 
  */
+@SuppressWarnings("serial")
 public class Frontend extends HttpServlet {
 
 	@Override

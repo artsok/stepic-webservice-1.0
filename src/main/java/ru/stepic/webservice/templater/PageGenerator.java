@@ -17,6 +17,7 @@ public class PageGenerator {
 	private final Configuration cfg;
 	private static PageGenerator pageGenerator;
 	
+	
 	private PageGenerator() {
 		cfg = new Configuration();
 	}
@@ -44,6 +45,16 @@ public class PageGenerator {
 		}
 		return stream.toString();
 	}
+	
+//	public String getPage(final String filename, String data) {
+//		try {
+//			Template template = cfg.getTemplate(HTML_DIR + File.separator + filename, Locale.getDefault());
+//			template.process(data, stream);
+//		} catch (IOException | TemplateException e) {
+//			e.printStackTrace();
+//		}
+//		return stream.toString();
+//	}
 	
 	
 }
