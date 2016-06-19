@@ -23,8 +23,10 @@ public class Mirror extends HttpServlet {
 		log.info("Start to handler of mirror page");
 		resp.getWriter().println(PageGenerator.getInstance().getPage("mirror.html", 
 				new HashMap<String, Object>() {{
-					put("Parameter", req.getParameter("key") == null ? "Укажите параметры" : req.getParameter("key"));}}));
-		resp.setContentType("text/html;charset=utf-8");
+					put("parameter", 
+							req.getParameter("key") == null ? "" : req.getParameter("key"));
+		}}));
 		resp.setStatus(HttpServletResponse.SC_OK);
+		resp.setContentType("text/html;charset=utf-8");
 	}
 }

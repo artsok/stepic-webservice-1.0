@@ -33,7 +33,6 @@ public class Frontend extends HttpServlet {
 	 * @param req
 	 * @return
 	 */
-	@SuppressWarnings("serial")
 	private static Map<String, Object> createPageVariablesMap(final HttpServletRequest req) {
 		Map<String, Object> pageVariables = new HashMap<String, Object>() {{
 			put("method", req.getMethod());

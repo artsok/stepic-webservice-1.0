@@ -1,11 +1,11 @@
 package ru.stepic.webservice;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.servlet.ServletContextHandler;
 import org.eclipse.jetty.servlet.ServletHolder;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import ru.stepic.webservice.servlets.Frontend;
 import ru.stepic.webservice.servlets.Mirror;
@@ -19,8 +19,7 @@ public class StartServer {
 	
 	private static final Logger log = LoggerFactory.getLogger(StartServer.class);
 	
-	public static void main(String[] args) throws Exception {
-		
+	public static void main(String[] args) throws Exception {	
 		ServletContextHandler context = new ServletContextHandler(ServletContextHandler.SESSIONS);
 		context.addServlet(new ServletHolder(new Frontend()), "/*"); 
 		context.addServlet(new ServletHolder(new Mirror()), "/mirror");
