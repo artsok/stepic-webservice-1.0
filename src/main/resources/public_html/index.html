@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8"/>
+    <title>L2.1</title>
+</head>
+<body>
+<p>При получении POST запроса на signup сервлет SignUpServlet должн запомнить логин и пароль в AccountService.</p>
+<form action="/signup" method="POST">
+    Login: <input type="text" name="login"/>
+    Password: <input type="password" name="password"/>
+    <input type="submit" value="Sign in">
+</form>
+</br>
+<p>При получении POST запроса на signin, после регистрации, SignInServlet проверяет,
+логин/пароль пользователя. Если пользователь уже зарегистрирован, север отвечает</p>
+<form action="/signin" method="POST">
+    Login: <input type="text" name="login"/>
+    Password: <input type="password" name="password"/>
+    <input type="submit" value="Sign in">
+</form>
+</body>
+</html>

@@ -21,12 +21,13 @@ public class Mirror extends HttpServlet {
 	@Override
 	protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 		log.info("Start to handler of mirror page");
+		resp.setContentType("text/html;charset=utf-8");
 		resp.getWriter().println(PageGenerator.getInstance().getPage("mirror.html", 
 				new HashMap<String, Object>() {{
 					put("parameter", 
 							req.getParameter("key") == null ? "" : req.getParameter("key"));
 		}}));
 		resp.setStatus(HttpServletResponse.SC_OK);
-		resp.setContentType("text/html;charset=utf-8");
+		
 	}
 }

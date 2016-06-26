@@ -36,15 +36,17 @@ public class PageGenerator {
 	 * @return
 	 */
 	public String getPage(final String filename, Map<String, Object> data) {
+		log.info("В методе тут");
 		Writer stream = new StringWriter();
 		try {
-			ClassTemplateLoader ctl = new ClassTemplateLoader(getClass(), "/templates"); //Для загрузки шаблонов из jar
+			ClassTemplateLoader ctl = new ClassTemplateLoader(getClass(), "/templates"); //Load templates from jar
 			cfg.setTemplateLoader(ctl);
 			Template template = cfg.getTemplate(filename);		
 			template.process(data, stream);
 		} catch (IOException | TemplateException e) {
 			log.error(e.getMessage());
 		}
+		log.info(stream.toString());
 		return stream.toString();
 	}	
 }

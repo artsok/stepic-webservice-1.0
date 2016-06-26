@@ -9,6 +9,9 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import ru.stepic.webservice.templater.PageGenerator;
 
 /**
@@ -18,6 +21,8 @@ import ru.stepic.webservice.templater.PageGenerator;
  */
 @SuppressWarnings("serial")
 public class Frontend extends HttpServlet {
+	
+	private static final Logger log = LoggerFactory.getLogger(Frontend.class);
 
 	@Override
 	protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
@@ -37,7 +42,7 @@ public class Frontend extends HttpServlet {
 		Map<String, Object> pageVariables = new HashMap<String, Object>() {{
 			put("method", req.getMethod());
 			put("URL", req.getRequestURL());
-			put("pathInfo", req.getPathInfo());
+			put("pathInfo", req.getPathInfo() == null ? "" : req.getPathInfo());
 			put("sessionId", req.getSession().getId());
 			put("parameters", req.getParameterMap().toString());
 		}};
@@ -47,7 +52,7 @@ public class Frontend extends HttpServlet {
 	@Override
 	protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 		Map<String, Object> pageVariables = createPageVariablesMap(req);
-		String message = req.getParameter("message"); //Параметр из меода post
+		String message = req.getParameter("message"); //Параметр из метода post
 		if(message == null || message.isEmpty()) {
 			resp.setStatus(HttpServletResponse.SC_FORBIDDEN);
 		} else {
