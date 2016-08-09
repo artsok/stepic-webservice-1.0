@@ -6,6 +6,9 @@ import java.util.Map;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import ru.stepic.webservice.dbservice.DBException;
+import ru.stepic.webservice.dbservice.DbService;
+
 /**
  * 
  * @author Artem Sokovets
@@ -25,7 +28,12 @@ public class AccountService {
 	}
 	
     public void addNewUser(UserProfile userProfile) {
-        loginToProfile.put(userProfile.getLogin(), userProfile);
+        //loginToProfile.put(userProfile.getLogin(), userProfile);
+    	try {
+			DbService.getInstance().addUser("");
+		} catch (DBException e) {
+			log.error("Exception when add new user", e);
+		}
     }
 
     public UserProfile getUserByLogin(String login) {

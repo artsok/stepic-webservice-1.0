@@ -3,6 +3,8 @@ package ru.stepic.webservice.templater;
 import java.io.IOException;
 import java.io.StringWriter;
 import java.io.Writer;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
 import java.util.Map;
 
 import org.slf4j.Logger;
@@ -28,6 +30,9 @@ public class PageGenerator {
 		}
 		return pageGenerator;
 	}
+
+
+
 	
 	/**
 	 * Взять страницу page.html и заменить {PARAM} значениями из карты data
