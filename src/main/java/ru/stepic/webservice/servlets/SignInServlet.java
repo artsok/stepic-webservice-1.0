@@ -26,7 +26,7 @@ public class SignInServlet extends HttpServlet {
 	}
 	
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-    	log.info("Start to handler of SignIn page");
+    	log.info("Start to handler of signIn page");
     	response.setContentType("text/html;charset=utf-8");
     	
     	String login = request.getParameter("login");

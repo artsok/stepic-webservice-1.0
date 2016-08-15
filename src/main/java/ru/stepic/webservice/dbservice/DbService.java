@@ -9,7 +9,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import ch.qos.logback.classic.spi.ThrowableProxyVO;
+import ru.stepic.webservice.dbservice.dao.UserProfileDAO;
 import ru.stepic.webservice.dbservice.dao.UsersDAO;
+import ru.stepic.webservice.dbservice.datasets.UserProfileDataSet;
 import ru.stepic.webservice.dbservice.datasets.UsersDataSet;
 import ru.stepic.webservice.servlets.Frontend;
 
@@ -68,9 +70,21 @@ public class DbService {
 			String url = "jdbc:h2:./h2db";
 			String name = "root";
 			String pass = "root";
-	        log.info("H2DB URL: " + url + "\n");       
-			return DriverManager.getConnection(url, name, pass);
-		} catch (Exception e) {
+			
+	         JdbcDataSource ds = new JdbcDataSource();
+	         ds.setURL(url);
+	         ds.setUser(name);
+	         ds.setPassword(pass);
+	         ds.getConnection();
+			
+//			
+//			String url = "jdbc:h2:./h2db";
+//			String name = "root";
+//			String pass = "root";
+//	        log.info("H2DB URL: " + url + "\n");       
+//			return DriverManager.getConnection(url, name, pass);
+	         return ds.getConnection();
+		} catch (SQLException e) {
 			log.error("Exception with connect to h2db", e);
 		}
 		return null;
@@ -101,14 +115,22 @@ public class DbService {
     	
     }
 	
-	public long addUser(String name) throws DBException {
+    
+    /**
+     * Add login and password to db
+     * @param login
+     * @param password
+     * @return
+     * @throws DBException
+     */
+	public long addUser(String login, String password) throws DBException {
 		try {
 			connection.setAutoCommit(false); //turn off autocommit -> will work with transactions 
-			UsersDAO user = new UsersDAO(connection);
-			user.createTable();
-			user.insertUser(name);
+			UserProfileDAO userProfile = new UserProfileDAO(connection);
+			userProfile.createTable();
+			userProfile.insertUser(login, password);
 			connection.commit();
-			return user.getUserId(name);
+			return userProfile.getUserProfileId(login);
 		} catch (SQLException e) { 
 			try {
 				connection.rollback();
@@ -126,12 +148,21 @@ public class DbService {
 		
 	}
 	
-	public UsersDataSet getUser(long id) throws SQLException {
+//	public UsersDataSet getUser(long id) throws SQLException {
+//		try {
+//			return new UsersDAO(connection).get(id);
+//		} catch (DBException e) {
+//			throw new DBException();
+//		}
+//	}
+	
+	public UserProfileDataSet getUser(String login) throws SQLException {
 		try {
-			return new UsersDAO(connection).get(id);
+			return new UserProfileDAO(connection).get(login);
 		} catch (DBException e) {
 			throw new DBException();
 		}
+		
 	}
 	
 }

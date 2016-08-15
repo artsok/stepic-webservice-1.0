@@ -1,6 +1,7 @@
 package ru.stepic.webservice;
 
 
+import java.io.IOException;
 import java.net.MalformedURLException;
 
 import org.eclipse.jetty.server.Handler;
@@ -35,55 +36,72 @@ public class StartServer {
 	private static final Logger log = LoggerFactory.getLogger(StartServer.class);
 	
 	public static void main(String[] args) throws Exception {
-//		AccountService accountService = new AccountService();
-//		accountService.addNewUser(new UserProfile("admin", "123"));
-//		accountService.addNewUser(new UserProfile("test", "123"));
+		AccountService accountService = new AccountService();
+		
+		//При обращение к ресурсу, вызывается переопределенный метод (указываем в какой директории искать ресурсы)
+		ResourceHandler resource_handler = new ResourceHandler() {
+            @Override
+            public Resource getResource(String path) throws MalformedURLException {
+                Resource resource = Resource.newClassPathResource(path);
+                log.info("CALL ME - " + path);
+                if (resource == null || !resource.exists()) {
+                	log.info("CALL ME - null - "+ path);
+                    resource = Resource.newClassPathResource("/public_html");
+//                   
+//                    try {
+//                    	log.info("debug");
+//                    	if(resource != null) {
+//                    		log.info(resource.getFile().toPath().toString());
+//                    	}
 //
-//		
-//		ResourceHandler resource_handler = new ResourceHandler() {
-//            @Override
-//            public Resource getResource(String path) throws MalformedURLException {
-//                Resource resource = Resource.newClassPathResource(path);
-//                if (resource == null || !resource.exists()) {
-//                    resource = Resource.newClassPathResource("META-INF/public_html");
-//                }
-//                return resource;
-//            }
-//        };
-//		
-//		//ResourceHandler resource_handler = new ResourceHandler();
-//        resource_handler.setDirectoriesListed(true);
-//		resource_handler.setResourceBase("src/main/resources/public_html");
-//		resource_handler.setBaseResource(null);
-//
-//		
-//		ServletContextHandler context = new ServletContextHandler(ServletContextHandler.SESSIONS);
-//		context.addServlet(new ServletHolder(new Frontend()), "/page"); 
-//		context.addServlet(new ServletHolder(new Mirror()), "/mirror");
+//					} catch (IOException e) {
+//						// TODO Auto-generated catch block
+//					}
+                    
+                }
+                return resource;
+            }
+        };
+		
+		//ResourceHandler resource_handler = new ResourceHandler();
+		resource_handler.setDirectoriesListed(true); // Разрешим просмотр списка файлов в папках
+        
+        //resource_handler.setResourceBase("/public_html"); // Установим базовой директорию ./web
+		resource_handler.setWelcomeFiles(new String[]{"index.html"}); // В качестве главной страницы будет использоваться index.html
+		//resource_handler.setResourceBase("public_html");
+		resource_handler.setResourceBase(".");
+		
+		 
+
+	
+		ServletContextHandler context = new ServletContextHandler(ServletContextHandler.SESSIONS);
+		  log.info("Init out1");
+		context.addServlet(new ServletHolder(new Frontend()), "/page"); 
+		context.addServlet(new ServletHolder(new Mirror()), "/mirror");
 //		context.addServlet(new ServletHolder(new UsersServlet(accountService)), "/api/v1/users");
 //		context.addServlet(new ServletHolder(new SessionsServlet(accountService)), "/api/v1/sessions");
-//		context.addServlet(new ServletHolder(new SignUpServlet(accountService)), "/signup");
-//		context.addServlet(new ServletHolder(new SignInServlet(accountService)), "/signin");
-//		
-//
-//        HandlerList handlers = new HandlerList();
-//        handlers.setHandlers(new Handler[]{resource_handler, context}); 
-//		
-//        Server server = new Server(8080);
-//        server.setHandler(handlers);
-//		
-//		server.start();
-//		log.info("Server started");
-//		server.join();
+		context.addServlet(new ServletHolder(new SignUpServlet(accountService)), "/signup");
+		context.addServlet(new ServletHolder(new SignInServlet(accountService)), "/signin");
 		
-		DbService db = DbService.getInstance();
-		db.printConnectInfo();
-		long userId = db.addUser("Artem");
-		log.info("Added user id: " + userId);
+
+        HandlerList handlers = new HandlerList();
+        handlers.setHandlers(new Handler[]{resource_handler, context}); 
 		
-		UsersDataSet dataSet = db.getUser(userId);
-		log.info("User data set:" + dataSet);
+        Server server = new Server(8080);
+        server.setHandler(handlers);
 		
-		db.cleanUp();
+		server.start();
+		log.info("Server started");
+		server.join();
+		
+		//DbService db = DbService.getInstance();
+//		db.printConnectInfo();
+//		long userId = db.addUser("Artem");
+//		log.info("Added user id: " + userId);
+//		
+//		UsersDataSet dataSet = db.getUser(userId);
+//		log.info("User data set:" + dataSet);
+//		
+//		db.cleanUp();
 	}
 }

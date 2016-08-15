@@ -29,3 +29,22 @@ Authorized: login
 Status code (401)
 текст страницы:
 Unauthorized
+
+Задача №3:
+Для запоминания пользователя AccountService должен использовать базу данных.
+Для теста используйте базу H2 над файлом в той же директории, что и src
+
+            String url = "jdbc:h2:./h2db";
+            String name = "test";
+            String pass = "test";
+
+            JdbcDataSource ds = new JdbcDataSource();
+            ds.setURL(url);
+            ds.setUser(name);
+            ds.setPassword(pass);
+
+Для хранения данных пользователя используйте таблицу users:
+create table if not exists users (id bigint auto_increment, login varchar(256), password varchar(256), primary key (id));
+Сервер должен создавать таблицу при старте если она не существует.
+
+При получении запроса на signup сервлет должен обратиться к DBService и записать логин и пароль в таблицу.

@@ -49,7 +49,7 @@ public class SessionsServlet extends HttpServlet {
             return;
         }
 
-        UserProfile profile = accountService.getUserByLogin(login);
+        UserProfile profile = null;// accountService.getUserByLogin(login);
         if (profile == null || !profile.getPass().equals(pass)) {
             response.setContentType("text/html;charset=utf-8");
             response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);

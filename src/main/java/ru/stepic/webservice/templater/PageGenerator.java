@@ -41,7 +41,6 @@ public class PageGenerator {
 	 * @return
 	 */
 	public String getPage(final String filename, Map<String, Object> data) {
-		log.info("В методе тут");
 		Writer stream = new StringWriter();
 		try {
 			ClassTemplateLoader ctl = new ClassTemplateLoader(getClass(), "/templates"); //Load templates from jar
@@ -49,9 +48,8 @@ public class PageGenerator {
 			Template template = cfg.getTemplate(filename);		
 			template.process(data, stream);
 		} catch (IOException | TemplateException e) {
-			log.error(e.getMessage());
+			log.error("Exception in getPage()", e);
 		}
-		log.info(stream.toString());
 		return stream.toString();
 	}	
 }

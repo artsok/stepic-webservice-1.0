@@ -1,5 +1,6 @@
 package ru.stepic.webservice.accounts;
 
+import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -8,6 +9,7 @@ import org.slf4j.LoggerFactory;
 
 import ru.stepic.webservice.dbservice.DBException;
 import ru.stepic.webservice.dbservice.DbService;
+import ru.stepic.webservice.dbservice.datasets.UserProfileDataSet;
 
 /**
  * 
@@ -16,28 +18,33 @@ import ru.stepic.webservice.dbservice.DbService;
  */
 public class AccountService {
 	
-	private final Map<String, UserProfile> loginToProfile;
+	private final Map<String, UserProfile> loginToProfile = new HashMap<>();;
 
-	private final Map<String, UserProfile> sessionIdToProfile;
+	private final Map<String, UserProfile> sessionIdToProfile = new HashMap<>();
 	
 	private static final Logger log = LoggerFactory.getLogger(AccountService.class);
 	
 	public AccountService() {
-		loginToProfile = new HashMap<>();
-		sessionIdToProfile = new HashMap<>();
+		log.info("Создали объект AccountService");
 	}
 	
+	
     public void addNewUser(UserProfile userProfile) {
-        //loginToProfile.put(userProfile.getLogin(), userProfile);
     	try {
-			DbService.getInstance().addUser("");
+			DbService.getInstance().addUser(userProfile.getLogin(), userProfile.getPass());
 		} catch (DBException e) {
 			log.error("Exception when add new user", e);
 		}
     }
 
-    public UserProfile getUserByLogin(String login) {
-        return loginToProfile.get(login);
+    public UserProfileDataSet getUserByLogin(String login)  {
+    	try {
+    		log.info(DbService.getInstance().getUser(login).getPassword() + " ddddddddd");
+			return DbService.getInstance().getUser(login);
+		} catch (SQLException e) {
+			e.printStackTrace();
+			return null;
+		}
     }
 
     public UserProfile getUserBySessionId(String sessionId) {
@@ -66,4 +73,5 @@ public class AccountService {
 	public Map<String, UserProfile> getSessionIdToProfile() {
 		return sessionIdToProfile;
 	}
+	
 }
