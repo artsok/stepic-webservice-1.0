@@ -1,8 +1,7 @@
 package ru.stepic.webservice.accounts;
 
 import java.sql.SQLException;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.Optional;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -18,60 +17,63 @@ import ru.stepic.webservice.dbservice.datasets.UserProfileDataSet;
  */
 public class AccountService {
 	
-	private final Map<String, UserProfile> loginToProfile = new HashMap<>();;
-
-	private final Map<String, UserProfile> sessionIdToProfile = new HashMap<>();
 	
 	private static final Logger log = LoggerFactory.getLogger(AccountService.class);
 	
-	public AccountService() {
-		log.info("Создали объект AccountService");
-	}
-	
-	
+	/**
+	 * Add new user 
+	 * @param userProfile {@link UserProfile}
+	 */
     public void addNewUser(UserProfile userProfile) {
     	try {
 			DbService.getInstance().addUser(userProfile.getLogin(), userProfile.getPass());
 		} catch (DBException e) {
-			log.error("Exception when add new user", e);
+			log.error("Exception in addNewUser()", e);
 		}
     }
 
+    /**
+     * Get UserProfileDataSet - class which contain row info from table 'user'
+     * @param login {@link String}
+     * @return
+     */
     public UserProfileDataSet getUserByLogin(String login)  {
     	try {
-    		log.info(DbService.getInstance().getUser(login).getPassword() + " ddddddddd");
 			return DbService.getInstance().getUser(login);
 		} catch (SQLException e) {
-			e.printStackTrace();
+			log.error("Exception in getUserByLogin()", e);
 			return null;
 		}
     }
 
-    public UserProfile getUserBySessionId(String sessionId) {
-        return sessionIdToProfile.get(sessionId);
-    }
-
-    public void addSession(String sessionId, UserProfile userProfile) {
-        sessionIdToProfile.put(sessionId, userProfile);
-        log.info("Add user with session: '" + sessionId + "'.");
-    }
-
-    public void deleteUser(String login) {
-    	loginToProfile.remove(login);
-    	log.info("Delete user with login: '" + login + "'.");
-    }
-    
-    public void deleteSession(String sessionId) {
-        sessionIdToProfile.remove(sessionId);
-        log.info("Delete session '" + sessionId + "' from stash.");
-    }
-    
-	public Map<String, UserProfile> getLoginToProfile() {
-		return loginToProfile;
+    /**
+     * Add info about session to table online_user
+     * @param userProfile {@link UserProfile}
+     * @param sessionId {@link String}
+     */
+	public void addSessionInfo(UserProfile userProfile, String sessionId) {
+    	try {
+			DbService.getInstance().addOnlineUser(userProfile.getLogin(), sessionId);
+		} catch (DBException e) {
+			log.error("Exception in addSessionInfo()", e);
+		}
 	}
-	
-	public Map<String, UserProfile> getSessionIdToProfile() {
-		return sessionIdToProfile;
+
+	/**
+	 * Check is user online
+	 * @param login {@link String}
+	 * @param sessionId {@link String}
+	 * @return true/false
+	 */
+	public boolean isUserOnline(String login, String sessionId) {
+		try {
+			if(Optional.ofNullable(DbService.getInstance().getOnlineUser(login)).isPresent()) {
+				return DbService.getInstance().getOnlineUser(login).getSessionId().contains(sessionId);
+			}
+		} catch (SQLException e) {
+			log.error("Exception in isUserOnline()", e);
+		}
+		return false;
 	}
-	
+
 }

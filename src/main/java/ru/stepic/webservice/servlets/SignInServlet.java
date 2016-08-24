@@ -14,6 +14,12 @@ import org.slf4j.LoggerFactory;
 import ru.stepic.webservice.accounts.AccountService;
 import ru.stepic.webservice.accounts.UserProfile;
 
+
+/**
+ * Servlet which handler localhost:port/signin
+ * @author User
+ *
+ */
 @SuppressWarnings("serial")
 public class SignInServlet extends HttpServlet {
 
@@ -25,8 +31,9 @@ public class SignInServlet extends HttpServlet {
 		this.accountService = accountService;
 	}
 	
+	@Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-    	log.info("Start to handler of signIn page");
+    	log.info("Start to handler of signIn url");
     	response.setContentType("text/html;charset=utf-8");
     	
     	String login = request.getParameter("login");
@@ -34,17 +41,18 @@ public class SignInServlet extends HttpServlet {
         String sessionId = request.getSession().getId();
         
         if (login == null || pass == null) {
+        	log.debug("SC_BAD_REQUEST");
             response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
             return;
         } 
     
         if(Optional.ofNullable(accountService.getUserByLogin(login)).isPresent()) {
-        	if(accountService.getSessionIdToProfile().containsKey(sessionId)) {
+        	if(accountService.isUserOnline(login, sessionId)) {
         		response.getWriter().println("You already login.");
         		response.setStatus(HttpServletResponse.SC_OK);       
         		return;
         	}
-        	accountService.addSession(request.getSession().getId(), new UserProfile(login, pass));
+        	accountService.addSessionInfo(new UserProfile(login, pass), sessionId);
         	response.getWriter().println("Authorized: " + login);
         	response.setStatus(HttpServletResponse.SC_OK);        	
         } else {

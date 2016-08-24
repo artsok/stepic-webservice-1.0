@@ -1,7 +1,6 @@
 package ru.stepic.webservice;
 
 
-import java.io.IOException;
 import java.net.MalformedURLException;
 
 import org.eclipse.jetty.server.Handler;
@@ -15,13 +14,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import ru.stepic.webservice.accounts.AccountService;
-import ru.stepic.webservice.accounts.UserProfile;
-import ru.stepic.webservice.dbservice.DbService;
-import ru.stepic.webservice.dbservice.dao.UsersDAO;
-import ru.stepic.webservice.dbservice.datasets.UsersDataSet;
 import ru.stepic.webservice.servlets.Frontend;
 import ru.stepic.webservice.servlets.Mirror;
-import ru.stepic.webservice.servlets.SessionsServlet;
 import ru.stepic.webservice.servlets.SignInServlet;
 import ru.stepic.webservice.servlets.SignUpServlet;
 import ru.stepic.webservice.servlets.UsersServlet;
@@ -43,43 +37,25 @@ public class StartServer {
             @Override
             public Resource getResource(String path) throws MalformedURLException {
                 Resource resource = Resource.newClassPathResource(path);
-                log.info("CALL ME - " + path);
                 if (resource == null || !resource.exists()) {
-                	log.info("CALL ME - null - "+ path);
-                    resource = Resource.newClassPathResource("/public_html");
-//                   
-//                    try {
-//                    	log.info("debug");
-//                    	if(resource != null) {
-//                    		log.info(resource.getFile().toPath().toString());
-//                    	}
-//
-//					} catch (IOException e) {
-//						// TODO Auto-generated catch block
-//					}
-                    
+                	log.info("resource does'nt find. Use anather path");
+                    resource = Resource.newClassPathResource("/public_html");                    
                 }
                 return resource;
             }
         };
 		
 		//ResourceHandler resource_handler = new ResourceHandler();
-		resource_handler.setDirectoriesListed(true); // Разрешим просмотр списка файлов в папках
+        //resource_handler.setResourceBase("/public_html"); // Установим базовой директорию
         
-        //resource_handler.setResourceBase("/public_html"); // Установим базовой директорию ./web
+		resource_handler.setDirectoriesListed(true); // Разрешим просмотр списка файлов в папках
 		resource_handler.setWelcomeFiles(new String[]{"index.html"}); // В качестве главной страницы будет использоваться index.html
-		//resource_handler.setResourceBase("public_html");
-		resource_handler.setResourceBase(".");
+		resource_handler.setResourceBase("."); //Указываем расположение ресурсных файлов
 		
-		 
-
-	
 		ServletContextHandler context = new ServletContextHandler(ServletContextHandler.SESSIONS);
-		  log.info("Init out1");
 		context.addServlet(new ServletHolder(new Frontend()), "/page"); 
 		context.addServlet(new ServletHolder(new Mirror()), "/mirror");
-//		context.addServlet(new ServletHolder(new UsersServlet(accountService)), "/api/v1/users");
-//		context.addServlet(new ServletHolder(new SessionsServlet(accountService)), "/api/v1/sessions");
+		context.addServlet(new ServletHolder(new UsersServlet(accountService)), "/api/v1/users");
 		context.addServlet(new ServletHolder(new SignUpServlet(accountService)), "/signup");
 		context.addServlet(new ServletHolder(new SignInServlet(accountService)), "/signin");
 		
@@ -93,15 +69,5 @@ public class StartServer {
 		server.start();
 		log.info("Server started");
 		server.join();
-		
-		//DbService db = DbService.getInstance();
-//		db.printConnectInfo();
-//		long userId = db.addUser("Artem");
-//		log.info("Added user id: " + userId);
-//		
-//		UsersDataSet dataSet = db.getUser(userId);
-//		log.info("User data set:" + dataSet);
-//		
-//		db.cleanUp();
 	}
 }
