@@ -8,7 +8,9 @@ import org.slf4j.LoggerFactory;
 
 import ru.stepic.webservice.dbservice.DBException;
 import ru.stepic.webservice.dbservice.DbService;
-import ru.stepic.webservice.dbservice.datasets.UserProfileDataSet;
+import ru.stepic.webservice.entity.OnlineUser;
+import ru.stepic.webservice.entity.UserProfile;
+
 
 /**
  * 
@@ -26,9 +28,9 @@ public class AccountService {
 	 */
     public void addNewUser(UserProfile userProfile) {
     	try {
-			DbService.getInstance().addUser(userProfile.getLogin(), userProfile.getPass());
+			DbService.getInstance().addUserProfile(userProfile);
 		} catch (DBException e) {
-			log.error("Exception in addNewUser()", e);
+			log.error("Exception in addNewUser(UserProfile userProfile)", e);
 		}
     }
 
@@ -37,9 +39,9 @@ public class AccountService {
      * @param login {@link String}
      * @return
      */
-    public UserProfileDataSet getUserByLogin(String login)  {
+    public UserProfile getUserByLogin(String login)  {
     	try {
-			return DbService.getInstance().getUser(login);
+			return DbService.getInstance().getUserProfile(login);
 		} catch (SQLException e) {
 			log.error("Exception in getUserByLogin()", e);
 			return null;
@@ -51,9 +53,9 @@ public class AccountService {
      * @param userProfile {@link UserProfile}
      * @param sessionId {@link String}
      */
-	public void addSessionInfo(UserProfile userProfile, String sessionId) {
+	public void addSessionInfo(OnlineUser onlineUser) {
     	try {
-			DbService.getInstance().addOnlineUser(userProfile.getLogin(), sessionId);
+			DbService.getInstance().addOnlineUser(onlineUser);
 		} catch (DBException e) {
 			log.error("Exception in addSessionInfo()", e);
 		}
@@ -66,12 +68,8 @@ public class AccountService {
 	 * @return true/false
 	 */
 	public boolean isUserOnline(String login, String sessionId) {
-		try {
-			if(Optional.ofNullable(DbService.getInstance().getOnlineUser(login)).isPresent()) {
-				return DbService.getInstance().getOnlineUser(login).getSessionId().contains(sessionId);
-			}
-		} catch (SQLException e) {
-			log.error("Exception in isUserOnline()", e);
+		if(Optional.ofNullable(DbService.getInstance().getOnlineUser(login)).isPresent()) {
+			return DbService.getInstance().getOnlineUser(login).getSessionid().contains(sessionId);
 		}
 		return false;
 	}

@@ -7,8 +7,17 @@
 			</Pattern>
 		</layout>
 	</appender>
+
+
+    <logger name="org.hibernate.sql" level="TRACE" />
+    <logger name="org.hibernate.type" level="TRACE" />
+    
+    
 	<!-- By default, the level of the root level is set to DEBUG -->
 	<root level="info">
 		<appender-ref ref="STDOUT" />
 	</root>
+	
+
+
 </configuration>

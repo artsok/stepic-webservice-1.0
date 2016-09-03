@@ -12,7 +12,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import ru.stepic.webservice.accounts.AccountService;
-import ru.stepic.webservice.accounts.UserProfile;
+import ru.stepic.webservice.entity.OnlineUser;
 
 
 /**
@@ -52,7 +52,7 @@ public class SignInServlet extends HttpServlet {
         		response.setStatus(HttpServletResponse.SC_OK);       
         		return;
         	}
-        	accountService.addSessionInfo(new UserProfile(login, pass), sessionId);
+        	accountService.addSessionInfo(new OnlineUser(login, sessionId));
         	response.getWriter().println("Authorized: " + login);
         	response.setStatus(HttpServletResponse.SC_OK);        	
         } else {

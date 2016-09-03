@@ -7,7 +7,7 @@
 	<packaging>jar</packaging>
 	<name>webservice</name>
 	<properties>
-		<com.h2database.h2.version>1.4.187</com.h2database.h2.version>
+		<com.h2database.h2.version>1.4.192</com.h2database.h2.version>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<java.version>1.8</java.version>
 	</properties>
@@ -110,6 +110,23 @@
 			<groupId>org.mariadb.jdbc</groupId>
 			<artifactId>mariadb-java-client</artifactId>
 			<version>1.4.6</version>
+		</dependency>
+		<!--Подключаем hibernate и JPA-->
+		<dependency>
+            <groupId>org.hibernate</groupId>
+            <artifactId>hibernate-entitymanager</artifactId>
+            <version>4.2.1.Final</version>
+        </dependency>
+        <dependency>
+            <groupId>org.hibernate.javax.persistence</groupId>
+            <artifactId>hibernate-jpa-2.0-api</artifactId>
+            <version>1.0.1.Final</version>
+        </dependency>
+        <!--Подключаем готовую реализацию MD5 от Apache Common Codec-->
+        <dependency>
+   		 <groupId>commons-codec</groupId>
+   		 <artifactId>commons-codec</artifactId>
+   		 <version>1.9</version>
 		</dependency>
 	</dependencies>
 </project>
